@@ -43,12 +43,6 @@
 <body>
 <div class="container-fluid">
     <br>
-    <br>
-    <div class="row-fluid">
-        <div class="span8">
-            <svg class="chart"></svg>
-        </div>
-    </div>
     <div class="row-fluid">
         <div class="span6">
             <form>
@@ -58,7 +52,7 @@
                             <label>Groceries/Dining out: </label>
                         </div>
                         <div class="span8">
-                            $<input type="text" id="top"/>
+                            $<input type="text" id="food"/>
                         </div>
                     </div>
                     <br>
@@ -67,7 +61,7 @@
                             <label>Gas/Automobile: </label>
                         </div>
                         <div class="span8">
-                            $<input type="text" id="second"/>
+                            $<input type="text" id="car"/>
                         </div>
                     </div>
                     <br>
@@ -76,7 +70,7 @@
                             <label>Entertainment: </label>
                         </div>
                         <div class="span8">
-                            $<input type="text" id="third"/>
+                            $<input type="text" id="fun"/>
                         </div>
                     </div> 
                     <br>
@@ -85,9 +79,19 @@
                             <label>Other: </label>
                         </div>
                         <div class="span8">
-                            $<input type="text" id="fourth"/>
+                            $<input type="text" id="other"/>
                         </div>
                     </div> 
+                    <br>
+                    <legend>Income</legend>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <label>Income: </label>
+                        </div>
+                        <div class="span8">
+                            $<input type="text" id="income"/>
+                        </div>
+                    </div>
                     <div class="row-fluid">
                         <div class="span4 offset8">
                             <button id="calc" class="btn btn-primary" type="button">Calculate</button>
@@ -98,11 +102,13 @@
             </form>
         </div>
         <div class="span6">
+            <div>   Individual expenses as a percentage<br> of total expenditures</div>
             <svg class="svgchart"></svg>
         </div>
     </div>
     <div class="row-fluid">
-        <div class="span4 offset3">
+        <div class="span8">
+            <svg class="chart"></svg>
         </div>
     </div>
 </div>
@@ -128,10 +134,13 @@
         .attr("width", width)
         .attr("height", barHeight * 4);
     
+    var startingX = "";
+
+
     var bar = chart.selectAll("g")
         .data(data)
       .enter().append("g")
-        .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+        .attr("transform", function(d, i) { return "translate(0,0)"; });
     
     bar.append("rect")
         .attr("class", "horizBar")
@@ -190,10 +199,15 @@
     // Add axes
     tickValues = ["Gas", "Cars", "Food", "Other"]
     
+    
+    textX = d3.scale.ordinal()
+                .domain(tickValues)
+                .range([0, 50, 100, 150]);
+
     var xAxis = d3.svg.axis()
-                    .scale(x)
+                    .scale(textX)
                     .ticks(4)
-                    .tickFormat( function(d, i) { return tickValues[i];})
+                    .tickValues("")
                     .orient("bottom");
     
     svgchart.append("g")
@@ -201,9 +215,18 @@
         .attr("transform", "translate(25," + height + ")")
         .call(xAxis);
  
+
+    /*
+    percentY = d3.scale.linear()
+                        .domain([0, d3.max(newData)])
+                        .range([height, 0]);
+    */
+
     var yAxis = d3.svg.axis()
                     .scale(y)
-                    .orient("right");
+                    .orient("right")
+
+
 
     svgchart.append("g")
         .attr("class", "y axis")
@@ -212,6 +235,7 @@
     
 
 
+    // Add data to value at specific index location
 
     $('#addBtn').click(function() {
         var newData = $('#add').val();
@@ -220,42 +244,76 @@
         BuildSVG(data);
 
     });
+
 /*
     $('rect').hover( function () { 
             $( this ).fadeOut(100); 
             $( this ).fadeIn(50);
         });
 */
+    
+    // Perform primary calculations
+    
     $('#calc').click(function() {
-        var topVal = $('#top').val();
-        var secVal = $('#second').val();
-        var thirdVal = $('#third').val();
-        var fourthVal = $('#fourth').val();
-        data = [Number(topVal), Number(secVal), Number(thirdVal), Number(fourthVal)];
-        BuildSVG(data);
+        var food = $('#food').val();
+        var car = $('#car').val();
+        var fun = $('#fun').val();
+        var other = $('#other').val();
+        var income = $('#income').val();
+        income = [Number(income)];
+        expenses = [Number(food), Number(car), Number(fun), Number(other)];
+        BuildSVG(expenses, income);
 
     });
 
-    function BuildSVG(data) {
-
-        /*
+    function BuildSVG(expenses, income) {
+        var data = expenses;
+       /*
         var g = d3.selectAll("g")
             .data(data);
         */
-        var x = ResetScale("X",data)
-        var y = ResetScale("Y",data)
+        var x = ResetScale("X", expenses, income);
+        var y = ResetScale("Y", expenses, income);
 
         // Manipulate horizontal bars and text
             // Bind new data set to horizontal bars
             d3.selectAll(".horizBar")
                 .data(data);
             // Begin transitions
-            d3.selectAll(".horizBar").transition().attr("width", function(d) { return x(d); });
+
+
+            /*
+            for(var i=0; i < data.length; i++) {
+                var xLoc = 0;
+                for(var iter = 0; iter <= i; iter++) {
+                        xLoc = xLoc + x(data[iter]);
+                        console.log(i);
+                        console.log(iter);
+                        console.log(xLoc);
+                    }}
+            */
+
+            d3.selectAll(".horizBar").transition()
+                .attr("width", function(d) { return x(d); })
+                .attr("x", function(d, i) { 
+                                            var xLoc = 0;
+                                            for(var iter = 0; iter <= i; iter++) {
+                                                    xLoc = xLoc + x(data[iter]);
+                                                }
+                                            return xLoc - x(data[i]);
+                                            });
+
+
             d3.selectAll(".horizText")
                 .data(data)
                 .text(function(d) { return d; });
-            d3.selectAll(".horizText").transition().attr("x", function(d) { return x(d) - 3; });
-
+            d3.selectAll(".horizText").transition().attr("x", function(d, i) { 
+                                            var xLoc = 0;
+                                            for(var iter = 0; iter <= i; iter++) {
+                                                    xLoc = xLoc + x(data[iter]);
+                                                }
+                                            return xLoc - 3;
+                                            });
         // Manipulate vertical bars and text
             
             // Bind new data to vertical bars
@@ -264,32 +322,74 @@
                 .data(data);
             d3.selectAll(".vertText")
                 .data(data)
-                .text(function(d) { return d; });
+                .text(function(d) { return "$"+d; });
 
             // Begin transitions
             
+            
+
             d3.selectAll(".vertBar").transition()
                 .attr("y", function(d) { return y(d);})
                 .attr("height", function(d) { return height - y(d);});
+            
             d3.selectAll(".vertText").transition().attr("y", function(d) { return y(d) + 3; });
+            
+            
+            tickValues = ["Gas", "Cars", "Food", "Other"]
+    
+    
+            textX = d3.scale.ordinal()
+                        .domain(tickValues)
+                        .range([0, 50, 100, 150]);
+
+            var xAxis = d3.svg.axis()
+                            .scale(textX)
+                            .ticks(4)
+                            .tickValues(tickValues)
+                            .orient("bottom");
+            
+            d3.select(".x").transition()
+                .call(xAxis);
+
+
+
+            var formatPercent = d3.format("00.0%");
+
+            var totalExpense = 0;
+            for (var i = expenses.length - 1; i >= 0; i--) {
+                totalExpense = totalExpense + Number(expenses[i]);
+            };
+            console.log(totalExpense);
+            console.log(d3.max(expenses)/income);
+            yAxisScale = d3.scale.linear()
+                        .domain([0, d3.max(expenses)/totalExpense])
+                        .range([height, 0]);
+
+            
             var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("right");
+                    .scale(yAxisScale)
+                    .orient("right")
+                    .tickFormat(formatPercent);
+
             d3.selectAll(".y").transition()
                 .call(yAxis);
     }
 
-    function ResetScale(string, newData) {
+    function ResetScale(string, expenses, income) {
         var scale = "";
         switch (string) {
                 case "X":
-                   scale = d3.scale.linear()
-                        .domain([0, d3.max(newData)])
+                    var totalExpense = 0;
+                    for (var i = expenses.length - 1; i >= 0; i--) {
+                        totalExpense = totalExpense + Number(expenses[i]);
+                    };
+                    scale = d3.scale.linear()
+                        .domain([0, totalExpense])
                         .range([0, width]);
                     break;
                 case "Y":
                     scale = d3.scale.linear()
-                        .domain([0, d3.max(newData)])
+                        .domain([0, d3.max(expenses)])
                         .range([height, 0]);
                     break;
             }
