@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+    <title>Class Practice</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+    <style>
+        .svgchart rect {
+            fill: steelblue;
+        }
+        
+        .chart rect {
+          fill: steelblue;
+        }
+
+        .svgchart  text {
+          fill: white;
+          font: 10px sans-serif;
+          text-anchor: end;
+        }
+
+        .chart text {
+          fill: white;
+          font: 10px sans-serif;
+          text-anchor: end;
+        }
+        
+        .axis text {
+          font: 10px sans-serif;
+          fill: black;
+        }
+
+        .axis path,
+        .axis line {
+          fill: none;
+          shape-rendering: crispEdges;
+        }
+
+    </style>
+
+</head>
+
+<body>
+<div class="container-fluid">
+    <br>
+    <br>
+    <div class="row-fluid">
+        <div class="span8">
+            <svg class="chart"></svg>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <form>
+                <legend>Expenses</legend>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <label>Groceries/Dining out: </label>
+                        </div>
+                        <div class="span8">
+                            $<input type="text" id="top"/>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <label>Gas/Automobile: </label>
+                        </div>
+                        <div class="span8">
+                            $<input type="text" id="second"/>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <label>Entertainment: </label>
+                        </div>
+                        <div class="span8">
+                            $<input type="text" id="third"/>
+                        </div>
+                    </div> 
+                    <br>
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <label>Other: </label>
+                        </div>
+                        <div class="span8">
+                            $<input type="text" id="fourth"/>
+                        </div>
+                    </div> 
+                    <div class="row-fluid">
+                        <div class="span4 offset8">
+                            <button id="calc" class="btn btn-primary" type="button">Calculate</button>
+                        </div>
+                    </div>
+                <br>
+                <input type="text" id="add"/> <input type="button" id="addBtn" value="Add"/>
+            </form>
+        </div>
+        <div class="span6">
+            <svg class="svgchart"></svg>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span4 offset3">
+        </div>
+    </div>
+</div>
+
+<br>
+
+
+
+
+<script type = "text/javascript" src="d3/d3.v3.min.js"></script>
+<script type="text/javascript" src="jquery/jquery-2.0.3.min.js"></script>
+<script>
+    
+    var data = [0, 0, 0, 0];
+    var width = 420,
+        barHeight = 20;
+    
+    var x = ResetScale("X", data);
+    
+    // Build horizontal chart
+    
+    var chart = d3.select(".chart")
+        .attr("width", width)
+        .attr("height", barHeight * 4);
+    
+    var bar = chart.selectAll("g")
+        .data(data)
+      .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+    
+    bar.append("rect")
+        .attr("class", "horizBar")
+        .attr("width", x)
+        .attr("height", barHeight - 1);
+    
+    bar.append("text")
+        .attr("class", "horizText")
+        .attr("x", function(d) { return x(d) - 3; })
+        .attr("y", barHeight / 2)
+        .attr("dy", ".35em")
+        .text(function(d) { return d; });
+
+
+
+    // Build vertical chart    
+    var margin = {top: 50, right: 50, bottom: 50, left: 50},
+    width = 300 - margin.left - margin.right,
+    height = 420 - margin.top - margin.bottom;
+    
+    svgData = [0, 0, 0, 0];
+    
+    // Set basic chart area
+    var svgchart = d3.select(".svgchart")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                      .append("g")
+                        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Set data range
+    var y = ResetScale("Y", svgData);
+    var x = ResetScale("X", svgData);
+    
+    // Bind data to containers for bar images
+    var svgbar = svgchart.selectAll("g")
+            .data(svgData)
+        .enter().append("g")
+            .attr("transform", function(d, i) { return "translate(" + ( i * (width/4) ) + ",0)"; });
+
+    // Add bar to container
+    svgbar.append("rect")
+        .attr("class", "vertBar")
+        .attr("y", y)
+        .attr("width", (width/4) - 1)
+        .attr("height", function(d) { return height - y(d); });
+
+    // Add text to bar
+    svgbar.append("text")
+        .attr("class", "vertText")
+        .attr("x",  (width/4) - 10)
+        .attr("y", function(d) {return y(d) + 3;})
+        .attr("dy", ".75em")
+        .attr("dx", ".5em")
+        .text(function(d) { return d; });
+
+    // Add axes
+    tickValues = ["Gas", "Cars", "Food", "Other"]
+    
+    var xAxis = d3.svg.axis()
+                    .scale(x)
+                    .ticks(4)
+                    .tickFormat( function(d, i) { return tickValues[i];})
+                    .orient("bottom");
+    
+    svgchart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(25," + height + ")")
+        .call(xAxis);
+ 
+    var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .orient("right");
+
+    svgchart.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(" + width + ",0)")
+        .call(yAxis);
+    
+
+
+
+    $('#addBtn').click(function() {
+        var newData = $('#add').val();
+        newTotal = Number(data[3])+Number(newData);
+        data[3] = newTotal;
+        BuildSVG(data);
+
+    });
+/*
+    $('rect').hover( function () { 
+            $( this ).fadeOut(100); 
+            $( this ).fadeIn(50);
+        });
+*/
+    $('#calc').click(function() {
+        var topVal = $('#top').val();
+        var secVal = $('#second').val();
+        var thirdVal = $('#third').val();
+        var fourthVal = $('#fourth').val();
+        data = [Number(topVal), Number(secVal), Number(thirdVal), Number(fourthVal)];
+        BuildSVG(data);
+
+    });
+
+    function BuildSVG(data) {
+
+        /*
+        var g = d3.selectAll("g")
+            .data(data);
+        */
+        var x = ResetScale("X",data)
+        var y = ResetScale("Y",data)
+
+        // Manipulate horizontal bars and text
+            // Bind new data set to horizontal bars
+            d3.selectAll(".horizBar")
+                .data(data);
+            // Begin transitions
+            d3.selectAll(".horizBar").transition().attr("width", function(d) { return x(d); });
+            d3.selectAll(".horizText")
+                .data(data)
+                .text(function(d) { return d; });
+            d3.selectAll(".horizText").transition().attr("x", function(d) { return x(d) - 3; });
+
+        // Manipulate vertical bars and text
+            
+            // Bind new data to vertical bars
+            
+            d3.selectAll(".vertBar")
+                .data(data);
+            d3.selectAll(".vertText")
+                .data(data)
+                .text(function(d) { return d; });
+
+            // Begin transitions
+            
+            d3.selectAll(".vertBar").transition()
+                .attr("y", function(d) { return y(d);})
+                .attr("height", function(d) { return height - y(d);});
+            d3.selectAll(".vertText").transition().attr("y", function(d) { return y(d) + 3; });
+            var yAxis = d3.svg.axis()
+                    .scale(y)
+                    .orient("right");
+            d3.selectAll(".y").transition()
+                .call(yAxis);
+    }
+
+    function ResetScale(string, newData) {
+        var scale = "";
+        switch (string) {
+                case "X":
+                   scale = d3.scale.linear()
+                        .domain([0, d3.max(newData)])
+                        .range([0, width]);
+                    break;
+                case "Y":
+                    scale = d3.scale.linear()
+                        .domain([0, d3.max(newData)])
+                        .range([height, 0]);
+                    break;
+            }
+        return scale;
+    }
+
+
+        //$('#lucy').css('border','3px solid red');
+        //$('.ricardo').css('background-color','yellow');
+        //$('body').css('background-color','yellow');
+        //$('div').css("background-color",'green');
+        //$('div').remove();
+
+
+    $('#lucy').click(function() {   
+        var color = $('input').val();
+        $(this).css("background-color",color)});
+    
+    $('#ricky').click(function() {
+        $('.ricardo').remove(); });
+
+    </script>
+
+
+
+<!--
+When lucy is clicked, change her border to blue.
+When lucy is clicked change the width of ricky to 400px.
+When lucy is hovered, change her opacity to .5.
+When either lucy or ricky is clicked, change the height of lucy to 300px.
+When either lucy or ricky is clicked, make them disappear.
+Bonus: Create a text input on your page where a user can type in a color. When the user finishes typing in their color and clicks on the lucy div, it should change that div to whatever color they typed in. You'll want to lookup the .val() method to get this done.
+-->
+
+</body>
+</html>
+

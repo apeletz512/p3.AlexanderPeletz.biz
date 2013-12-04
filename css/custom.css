@@ -1,0 +1,12 @@
+body {background-color: transparent;}
+
+#settings, #others, #login, #home, #signup, #confirmation {background-color: black; color: white; padding: 10px;}
+
+#profile, #stats, #addpost {background-color: black; color: white; padding: 10px; margin: 5px;}
+
+#home-inner, #others-inner, #settings-inner, #profile-inner, #stats-inner, #addpost-inner, #signup-inner, #login-inner, #confirmation-inner {background-color: #1a1a1a; padding: 5px;}
+
+.post {background-color: black; color: white; padding: 5px; margin: 5px; margin-bottom: 20px;}
+.userrow, .post-inner {background-color: #1a1a1a; margin: 5px; padding: 5px;}
+.username {float: left; width: 80%;}
+.follow, .unfollow {float: right; width: 20%;}
