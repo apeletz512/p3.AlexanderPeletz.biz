@@ -11,66 +11,68 @@
 <div class="container-fluid">
     <br>
     <div class="row-fluid">
-        <div class="span6">
-            <form>
-                <legend>Expenses</legend>
-                    <div class="row-fluid">
-                        <div class="span4">
-                            <label>Groceries/Dining out: </label>
-                        </div>
-                        <div class="span8">
-                            $<input type="text" id="food"/>
-                        </div>
-                    </div>
-                    <div class="row-fluid">
-                        <div class="span4">
-                            <label>Gas/Automobile: </label>
-                        </div>
-                        <div class="span8">
-                            $<input type="text" id="car"/>
-                        </div>
-                    </div>
-                    <div class="row-fluid">
-                        <div class="span4">
-                            <label>Entertainment: </label>
-                        </div>
-                        <div class="span8">
-                            $<input type="text" id="fun"/>
-                        </div>
-                    </div> 
-                    <div class="row-fluid">
-                        <div class="span4">
-                            <label>Other: </label>
-                        </div>
-                        <div class="span8">
-                            $<input type="text" id="other"/>
-                        </div>
-                    </div> 
-                    <legend>Income</legend>
-                    <div class="row-fluid">
-                        <div class="span4">
-                            <label>Income: </label>
-                        </div>
-                        <div class="span8">
-                            $<input type="text" id="income"/>
-                        </div>
-                    </div>
-                    <div class="row-fluid">
-                        <div class="span4 offset8">
-                            <button id="calc" class="btn btn-primary" type="button">Calculate</button>
-                        </div>
-                    </div>
-                <input type="text" id="add"/><input type="button" id="addBtn" value="Add"/>
-            </form>
-        </div>
-        <div class="span6">
-            <div>   Individual expenses as a percentage<br> of total expenditures</div>
-            <svg class="svgchart"></svg>
+        <div class="span8 offset2">
+            <svg class="chart"></svg>
         </div>
     </div>
     <div class="row-fluid">
-        <div class="span8">
-            <svg class="chart"></svg>
+        <div class="span4">
+            Chart placeholder
+        </div>
+        <div class="span4">
+            <form>
+                <legend>Expenses</legend>
+                <div class="row-fluid">
+                    <div class="span4">
+                        <label>Groceries/Dining out: </label>
+                    </div>
+                    <div class="span8">
+                        $<input type="text" id="food"/>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+                        <label>Gas/Automobile: </label>
+                    </div>
+                    <div class="span8">
+                        $<input type="text" id="car"/>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+                        <label>Entertainment: </label>
+                    </div>
+                    <div class="span8">
+                        $<input type="text" id="fun"/>
+                    </div>
+                </div> 
+                <div class="row-fluid">
+                    <div class="span4">
+                        <label>Other: </label>
+                    </div>
+                    <div class="span8">
+                        $<input type="text" id="other"/>
+                    </div>
+                </div> 
+                <legend>Income</legend>
+                <div class="row-fluid">
+                    <div class="span4">
+                        <label>Income: </label>
+                    </div>
+                    <div class="span8">
+                        $<input type="text" id="income"/>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4 offset8">
+                        <button id="calc" class="btn btn-primary" type="button">Calculate</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="span4">
+            <div>   Individual expenses as a percentage<br> of total expenditures</div>
+            <svg class="svgchart"></svg>
         </div>
     </div>
 </div>
