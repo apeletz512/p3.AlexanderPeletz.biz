@@ -84,7 +84,7 @@
         width = 300 - margin.left - margin.right,
         height = 420 - margin.top - margin.bottom;
         
-        incData = [0, 0, 0, 0];
+        incData = [0, 0, 0];
         
         // Set basic chart area
         var incChart = d3.select(".incChart")
@@ -101,19 +101,19 @@
         var incBar = incChart.selectAll("g")
                 .data(incData)
             .enter().append("g")
-                .attr("transform", function(d, i) { return "translate(" + ( i * (width/4) ) + ",0)"; });
+                .attr("transform", function(d, i) { return "translate(" + ( i * (width/3) ) + ",0)"; });
 
         // Add bar to container
         incBar.append("rect")
             .attr("class", function(d, i) { var barClass = "incBar bar" + String(i); return barClass; })
             .attr("y", y)
-            .attr("width", (width/4) - 1)
+            .attr("width", (width/3) - 1)
             .attr("height", function(d) { return height - y(d); });
 
         // Add text to bar
         incBar.append("text")
             .attr("class", "incText")
-            .attr("x",  (width/4) - 10)
+            .attr("x",  (width/3) - 10)
             .attr("y", function(d) {return y(d) + 3;})
             .attr("dy", ".75em")
             .attr("dx", ".5em")
@@ -121,12 +121,12 @@
 
         // Add axes
             // Set ticks
-        tickValues = ["Gas", "Car", "Food", "Other"]
+        tickValues = ["Wages", "Interest/Dividens", "Other"]
             
             // Set ordinal scale for ticks
         textX = d3.scale.ordinal()
                     .domain(tickValues)
-                    .range([0, 50, 100, 150]);
+                    .range([0, 66, 133]);
         
             // Build x axis
         var xAxis = d3.svg.axis()
@@ -136,7 +136,7 @@
         
             // Add axis to chart area
         incChart.append("g")
-            .attr("class", "x axis")
+            .attr("class", "incX axis")
             .attr("transform", "translate(25," + height + ")")
             .call(xAxis);
      
@@ -147,7 +147,7 @@
 
             // Add axis to chart area
         incChart.append("g")
-            .attr("class", "y axis")
+            .attr("class", "incY axis")
             .attr("transform", "translate(" + width + ",0)")
             .call(yAxis);
 
@@ -210,7 +210,7 @@
         
             // Add axis to chart area
         expChart.append("g")
-            .attr("class", "x axis")
+            .attr("class", "expX axis")
             .attr("transform", "translate(25," + height + ")")
             .call(xAxis);
      
@@ -221,7 +221,7 @@
 
             // Add axis to chart area
         expChart.append("g")
-            .attr("class", "y axis")
+            .attr("class", "expY axis")
             .attr("transform", "translate(" + width + ",0)")
             .call(yAxis);
         
@@ -233,13 +233,15 @@
 
     function BuildSVG(expenses, income) {
         // Primary function responsible for manipulating SVG elements
-        var data = expenses;
+        var data = expenses
+        var expData = expenses;
+        var incData = income;
        /*
         var g = d3.selectAll("g")
             .data(data);
         */
         var x = ResetScale("X", expenses, income);
-        var y = ResetScale("Y", expenses, income);
+        var y = ResetScale("expY", expenses, income);
 
         // Manipulate horizontal bars and text
             // Bind new data set to horizontal bars
@@ -275,7 +277,7 @@
 
                 // Reset axis
             
-            // Set x axis range and labels
+                // Set x axis range and labels
             var formatPercent = d3.format(".0%");
 
             var totalExpense = 0;
@@ -312,11 +314,19 @@
 
 
         // Manipulate income bars and text
+                        
+                // Set x axis range and labels
+            var totalIncome = 0;
+            for (var i = income.length - 1; i >= 0; i--) {
+                totalIncome = totalIncome + Number(income[i]);
+            };
+            
+
             // Bind new data to vertical bars and reset text labels
             d3.selectAll(".incBar")
-                .data(data);
+                .data(incData);
             d3.selectAll(".incText")
-                .data(data)
+                .data(incData)
                 .text(function(d) { return "$"+d; });
 
             // Begin transitions
@@ -330,11 +340,11 @@
                 .attr("y", function(d) { return y(d) + 3; });
             
                 // Set x axis labels
-            tickValues = ["Gas", "Cars", "Food", "Other"]
+            tickValues = ["Wages", "Interest/Dividends", "Other"]
     
             textX = d3.scale.ordinal()
                         .domain(tickValues)
-                        .range([0, 50, 100, 150]);
+                        .range([0, 66, 133]);
 
             var xAxis = d3.svg.axis()
                             .scale(textX)
@@ -342,12 +352,12 @@
                             .tickValues(tickValues)
                             .orient("bottom");
             
-            d3.select(".x").transition()
+            d3.select(".incX").transition()
                 .call(xAxis);
 
                 // Set y axis range and labels
             yAxisScale = d3.scale.linear()
-                        .domain([0, d3.max(expenses)/totalExpense])
+                        .domain([0, d3.max(income)/totalIncome])
                         .range([height, 0]);
 
                 // Build new y axis
@@ -357,7 +367,7 @@
                     .tickFormat(formatPercent);
                 
                 // Transition to new y axis
-            d3.selectAll(".y").transition()
+            d3.selectAll(".incY").transition()
                 .call(yAxis);
 
 
@@ -365,9 +375,9 @@
         // Manipulate expense bars and text
             // Bind new data to vertical bars and reset text labels
             d3.selectAll(".expBar")
-                .data(data);
+                .data(expData);
             d3.selectAll(".expText")
-                .data(data)
+                .data(expData)
                 .text(function(d) { return "$"+d; });
 
             // Begin transitions
@@ -393,7 +403,7 @@
                             .tickValues(tickValues)
                             .orient("bottom");
             
-            d3.select(".x").transition()
+            d3.select(".expX").transition()
                 .call(xAxis);
 
                 // Set y axis range and labels
@@ -408,14 +418,14 @@
                     .tickFormat(formatPercent);
                 
                 // Transition to new y axis
-            d3.selectAll(".y").transition()
+            d3.selectAll(".expY").transition()
                 .call(yAxis);
     }
 
     function ResetScale(string, expenses, income) {
         // This scaling function determines input and output ranges which are commonly reset when new data is supplied to the site
         var scale = "";
-        switch (string) {
+        switch (string) {                
                 case "X":
                     var totalExpense = 0;
                     for (var i = expenses.length - 1; i >= 0; i--) {
@@ -431,7 +441,12 @@
                         .domain([0, maxValue])
                         .range([0, 800]);
                     break;
-                case "Y":
+                case "incY":
+                    scale = d3.scale.linear()
+                        .domain([0, d3.max(income)])
+                        .range([height, 0]);
+                    break;
+                case "expY":
                     scale = d3.scale.linear()
                         .domain([0, d3.max(expenses)])
                         .range([height, 0]);

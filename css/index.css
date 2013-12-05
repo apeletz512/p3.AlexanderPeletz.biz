@@ -24,6 +24,12 @@
   text-anchor: end;
 }
 
+.incChart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
 .chart text {
   fill: white;
   font: 10px sans-serif;
