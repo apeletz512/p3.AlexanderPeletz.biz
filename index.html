@@ -360,6 +360,7 @@
             };
             console.log(totalExpense);
             console.log(d3.max(expenses)/income);
+            
             yAxisScale = d3.scale.linear()
                         .domain([0, d3.max(expenses)/totalExpense])
                         .range([height, 0]);
