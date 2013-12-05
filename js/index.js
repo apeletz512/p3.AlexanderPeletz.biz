@@ -194,9 +194,31 @@
                                             });
 
                 // Reset axis
+            
+            // Set x axis range and labels
+            var formatPercent = d3.format(".0%");
+
+            var totalExpense = 0;
+            for (var i = expenses.length - 1; i >= 0; i--) {
+                totalExpense = totalExpense + Number(expenses[i]);
+            };
+            
+            if (totalExpense > income) {
+                maxX = totalExpense;
+            }
+            else {
+                maxX = income;
+            }
+
+            xAxisScale = d3.scale.linear()
+                        .domain([0, maxX/income])
+                        .range([0, 800]);
+
+
             xAxis = d3.svg.axis()
-                    .scale(x)
+                    .scale(xAxisScale)
                     .orient("bottom")
+                    .tickFormat(formatPercent)
 
             d3.select(".vertx").transition()
                 .call(xAxis);
@@ -244,15 +266,6 @@
                 .call(xAxis);
 
                 // Set y axis range and labels
-            var formatPercent = d3.format(".0%");
-
-            var totalExpense = 0;
-            for (var i = expenses.length - 1; i >= 0; i--) {
-                totalExpense = totalExpense + Number(expenses[i]);
-            };
-            console.log(totalExpense);
-            console.log(d3.max(expenses)/income);
-            
             yAxisScale = d3.scale.linear()
                         .domain([0, d3.max(expenses)/totalExpense])
                         .range([height, 0]);
