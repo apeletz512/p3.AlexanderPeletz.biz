@@ -1,0 +1,42 @@
+        
+.incLine {
+    stroke: red;
+}
+
+.bar0 {
+    fill: red;
+}
+
+.bar1 {
+    fill: green;
+}
+
+.bar2 {
+    fill: blue;
+}
+
+.bar3 {
+    fill: gray;
+}
+.svgchart  text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
+
+.axis text {
+  font: 10px sans-serif;
+  fill: black;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  shape-rendering: crispEdges;
+}
