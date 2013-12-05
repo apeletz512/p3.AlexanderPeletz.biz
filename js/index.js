@@ -1,37 +1,28 @@
-    // Add data to value at specific index location
-    $('#addBtn').click(function() {
-        var newData = $('#add').val();
-        newTotal = Number(data[3])+Number(newData);
-        data[3] = newTotal;
-        BuildSVG(data);
-
-    });
-
-    
     // Perform primary calculations    
     $('#calc').click(function() {
         var food = $('#food').val();
         var car = $('#car').val();
         var fun = $('#fun').val();
-        var other = $('#other').val();
+        var expOther = $('#other').val();
         var wage = $('#wage').val();
         var interest = $('#interest').val();
         var incOther = $('#incOther').val();
 
-        income = [(Number(wage)+Number(interest)+Number(incOther))];
-        expenses = [Number(food), Number(car), Number(fun), Number(other)];
+        income = [Number(wage), Number(interest), Number(incOther)];
+        expenses = [Number(food), Number(car), Number(fun), Number(expOther)];
         BuildSVG(expenses, income);
 
     });
 
 
     // Initialize basic variables
-    var data = [0, 0, 0, 0];
-    var margin = {top: 25, right: 50, bottom: 25, left: 50},
+    var income = [0, 0, 0],
+        expenses = [0, 0, 0, 0],
+        margin = {top: 25, right: 50, bottom: 25, left: 50},
         width = 900 - margin.left - margin.right,
         height =  125 - margin.top - margin.bottom;
 
-    var x = ResetScale("X", data);
+    var x = ResetScale("X", expenses, income);
         
     // Build stacked bar chart
         // Set chart area
@@ -43,7 +34,7 @@
 
         // Bind initial data and starting location
         var bar = chart.selectAll("g")
-            .data(data)
+            .data(expenses)
           .enter().append("g")
             .attr("transform", function(d, i) { return "translate(0,0)"; });
         
@@ -66,7 +57,7 @@
                     .orient("bottom")
 
         chart.append("g")
-            .attr("class", "vertx axis")
+            .attr("class", "stackedX axis")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
         
@@ -81,10 +72,10 @@
     // Build income chart   
         // Establish margins
         var margin = {top: 50, right: 50, bottom: 50, left: 50},
-        width = 300 - margin.left - margin.right,
+        width = 330 - margin.left - margin.right,
         height = 420 - margin.top - margin.bottom;
         
-        incData = [0, 0, 0];
+        
         
         // Set basic chart area
         var incChart = d3.select(".incChart")
@@ -94,12 +85,12 @@
                             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // Set data range
-        var y = ResetScale("Y", incData);
-        var x = ResetScale("X", incData);
+        var y = ResetScale("incY", expenses, income);
+        var x = ResetScale("X", expenses, income);
         
         // Bind data to containers for bar images
         var incBar = incChart.selectAll("g")
-                .data(incData)
+                .data(income)
             .enter().append("g")
                 .attr("transform", function(d, i) { return "translate(" + ( i * (width/3) ) + ",0)"; });
 
@@ -153,12 +144,9 @@
 
     // Build expenses chart    
         // Establish margins
-
         var margin = {top: 50, right: 50, bottom: 50, left: 50},
         width = 300 - margin.left - margin.right,
-        height = 420 - margin.top - margin.bottom;
-        
-        expData = [0, 0, 0, 0];
+        height = 420 - margin.top - margin.bottom;        
         
         // Set basic chart area
         var expChart = d3.select(".expChart")
@@ -168,12 +156,11 @@
                             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // Set data range
-        var y = ResetScale("Y", expData);
-        var x = ResetScale("X", expData);
+        var y = ResetScale("expY", expenses, income);
         
         // Bind data to containers for bar images
         var expBar = expChart.selectAll("g")
-                .data(expData)
+                .data(expenses)
             .enter().append("g")
                 .attr("transform", function(d, i) { return "translate(" + ( i * (width/4) ) + ",0)"; });
 
@@ -233,20 +220,12 @@
 
     function BuildSVG(expenses, income) {
         // Primary function responsible for manipulating SVG elements
-        var data = expenses
-        var expData = expenses;
-        var incData = income;
-       /*
-        var g = d3.selectAll("g")
-            .data(data);
-        */
-        var x = ResetScale("X", expenses, income);
-        var y = ResetScale("expY", expenses, income);
 
+        var x = ResetScale("X", expenses, income);
         // Manipulate horizontal bars and text
             // Bind new data set to horizontal bars
             d3.selectAll(".horizBar")
-                .data(data);
+                .data(expenses);
             
             // Begin transitions
                 // Place horizontal bars (aka execute a function that holds the crown for "hardest thing ever to conceptualize")
@@ -255,14 +234,14 @@
                 .attr("x", function(d, i) { 
                                             var xLoc = 0;
                                             for(var iter = 0; iter <= i; iter++) {
-                                                    xLoc = xLoc + x(data[iter]);
+                                                    xLoc = xLoc + x(expenses[iter]);
                                                 }
-                                            return xLoc - x(data[i]);
+                                            return xLoc - x(expenses[i]);
                                             });
 
                 // Place text labels for horizontal chart
             d3.selectAll(".horizText")
-                .data(data)
+                .data(expenses)
                 .text(function(d) { if(d > 0) { return "$"+d; }});
                 
                 // Set location of labels
@@ -270,7 +249,7 @@
                     .attr("x", function(d, i) { 
                                             var xLoc = 0;
                                             for(var iter = 0; iter <= i; iter++) {
-                                                    xLoc = xLoc + x(data[iter]);
+                                                    xLoc = xLoc + x(expenses[iter]);
                                                 }
                                             return xLoc - 3;
                                             });
@@ -283,31 +262,37 @@
             var totalExpense = 0;
             for (var i = expenses.length - 1; i >= 0; i--) {
                 totalExpense = totalExpense + Number(expenses[i]);
-            };
-            
-            if (totalExpense > income) {
-                maxX = totalExpense;
+            }
+            var totalIncome = 0;
+            for (var i = income.length - 1; i >=0; i--) {
+                totalIncome = totalIncome + Number(income[i]);
+            }
+
+
+            if (totalExpense > totalIncome) {
+                maxValue = totalExpense
             }
             else {
-                maxX = income;
+                maxValue = totalIncome
             }
 
             xAxisScale = d3.scale.linear()
-                        .domain([0, maxX/income])
+                        .domain([0, maxValue/totalIncome])
                         .range([0, 800]);
 
+            var formatPercent = d3.format(".0%");
 
             xAxis = d3.svg.axis()
                     .scale(xAxisScale)
                     .orient("bottom")
                     .tickFormat(formatPercent)
 
-            d3.select(".vertx").transition()
+            d3.select(".stackedX").transition()
                 .call(xAxis);
 
             d3.select(".incLine")
-                .data(income);
-            
+                .data([totalIncome]);
+
             d3.select(".incLine").transition()
                 .attr("x1", x)
                 .attr("x2", x);
@@ -320,13 +305,14 @@
             for (var i = income.length - 1; i >= 0; i--) {
                 totalIncome = totalIncome + Number(income[i]);
             };
-            
+
+            var y = ResetScale("incY", expenses, income);
 
             // Bind new data to vertical bars and reset text labels
             d3.selectAll(".incBar")
-                .data(incData);
+                .data(income);
             d3.selectAll(".incText")
-                .data(incData)
+                .data(income)
                 .text(function(d) { return "$"+d; });
 
             // Begin transitions
@@ -375,10 +361,12 @@
         // Manipulate expense bars and text
             // Bind new data to vertical bars and reset text labels
             d3.selectAll(".expBar")
-                .data(expData);
+                .data(expenses);
             d3.selectAll(".expText")
-                .data(expData)
+                .data(expenses)
                 .text(function(d) { return "$"+d; });
+
+            var y = ResetScale("expY", expenses, income);
 
             // Begin transitions
                 // Transition vertical bars
@@ -431,16 +419,35 @@
                     for (var i = expenses.length - 1; i >= 0; i--) {
                         totalExpense = totalExpense + Number(expenses[i]);
                     }
-                    if (totalExpense > income) {
+                    var totalIncome = 0;
+                    for (var i = income.length - 1; i >=0; i--) {
+                        totalIncome = totalIncome + Number(income[i]);
+                    }
+                    console.log(totalIncome);
+                    console.log(totalExpense);
+
+                    if (totalExpense > totalIncome) {
                         maxValue = totalExpense
                     }
                     else {
-                        maxValue = income
+                        maxValue = totalIncome
                     }
+                    console.log(maxValue);
                     scale = d3.scale.linear()
                         .domain([0, maxValue])
                         .range([0, 800]);
                     break;
+
+                case "incX":
+                    var totalIncome = 0;
+                    for (var i = income.length - 1; i >=0; i--) {
+                        totalIncome = totalIncome + Number(income[i]);
+                    }    
+                    scale = d3.scale.linear()
+                        .domain([0, totalIncome])
+                        .range([0, 800]);
+                    break;
+                
                 case "incY":
                     scale = d3.scale.linear()
                         .domain([0, d3.max(income)])
