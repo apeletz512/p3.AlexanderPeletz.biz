@@ -17,7 +17,8 @@
     </div>
     <div class="row-fluid">
         <div class="span4">
-            Chart placeholder
+            <div>   Individual expenses as a percentage<br> of total expenditures</div>
+            <svg class="incChart"></svg>
         </div>
         <div class="span4">
             <form>
@@ -57,22 +58,39 @@
                 <legend>Income</legend>
                 <div class="row-fluid">
                     <div class="span4">
-                        <label>Income: </label>
+                        <label>Wages: </label>
                     </div>
                     <div class="span8">
-                        $<input type="text" id="income"/>
+                        $<input type="text" id="wage"/>
                     </div>
                 </div>
                 <div class="row-fluid">
-                    <div class="span4 offset8">
-                        <button id="calc" class="btn btn-primary" type="button">Calculate</button>
+                    <div class="span4">
+                        <label>Interest/Dividends: </label>
+                    </div>
+                    <div class="span8">
+                        $<input type="text" id="interest"/>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4">
+                        <label>Other: </label>
+                    </div>
+                    <div class="span8">
+                        $<input type="text" id="incOther"/>
+                    </div>
+                </div>
+                <br>
+                <div class="row-fluid">
+                    <div class="span8 offset2">
+                        <button id="calc" class="btn btn-primary btn-block" type="button">Calculate</button>
                     </div>
                 </div>
             </form>
         </div>
         <div class="span4">
             <div>   Individual expenses as a percentage<br> of total expenditures</div>
-            <svg class="svgchart"></svg>
+            <svg class="expChart"></svg>
         </div>
     </div>
 </div>

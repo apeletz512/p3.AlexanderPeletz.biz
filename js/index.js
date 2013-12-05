@@ -14,8 +14,11 @@
         var car = $('#car').val();
         var fun = $('#fun').val();
         var other = $('#other').val();
-        var income = $('#income').val();
-        income = [Number(income)];
+        var wage = $('#wage').val();
+        var interest = $('#interest').val();
+        var incOther = $('#incOther').val();
+
+        income = [(Number(wage)+Number(interest)+Number(incOther))];
         expenses = [Number(food), Number(car), Number(fun), Number(other)];
         BuildSVG(expenses, income);
 
@@ -30,7 +33,7 @@
 
     var x = ResetScale("X", data);
         
-    // Build horizontal chart
+    // Build stacked bar chart
         // Set chart area
         var chart = d3.select(".chart")
                         .attr("width", width + margin.left + margin.right)
@@ -68,7 +71,6 @@
             .call(xAxis);
         
         // Create floating income bar
-
         chart.append("line")
             .attr("class", "incLine")
             .attr("x1", "200")
@@ -76,41 +78,40 @@
             .attr("x2", "200")
             .attr("y2", "75");
 
-    // Build vertical chart    
+    // Build income chart   
         // Establish margins
-
         var margin = {top: 50, right: 50, bottom: 50, left: 50},
         width = 300 - margin.left - margin.right,
         height = 420 - margin.top - margin.bottom;
         
-        svgData = [0, 0, 0, 0];
+        incData = [0, 0, 0, 0];
         
         // Set basic chart area
-        var svgchart = d3.select(".svgchart")
+        var incChart = d3.select(".incChart")
                             .attr("width", width + margin.left + margin.right)
                             .attr("height", height + margin.top + margin.bottom)
                           .append("g")
                             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // Set data range
-        var y = ResetScale("Y", svgData);
-        var x = ResetScale("X", svgData);
+        var y = ResetScale("Y", incData);
+        var x = ResetScale("X", incData);
         
         // Bind data to containers for bar images
-        var svgbar = svgchart.selectAll("g")
-                .data(svgData)
+        var incBar = incChart.selectAll("g")
+                .data(incData)
             .enter().append("g")
                 .attr("transform", function(d, i) { return "translate(" + ( i * (width/4) ) + ",0)"; });
 
         // Add bar to container
-        svgbar.append("rect")
+        incBar.append("rect")
             .attr("class", function(d, i) { var barClass = "vertBar bar" + String(i); return barClass; })
             .attr("y", y)
             .attr("width", (width/4) - 1)
             .attr("height", function(d) { return height - y(d); });
 
         // Add text to bar
-        svgbar.append("text")
+        incBar.append("text")
             .attr("class", "vertText")
             .attr("x",  (width/4) - 10)
             .attr("y", function(d) {return y(d) + 3;})
@@ -134,7 +135,7 @@
                         .orient("bottom");
         
             // Add axis to chart area
-        svgchart.append("g")
+        incChart.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(25," + height + ")")
             .call(xAxis);
@@ -145,7 +146,81 @@
                         .orient("right")
 
             // Add axis to chart area
-        svgchart.append("g")
+        incChart.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + width + ",0)")
+            .call(yAxis);
+
+    // Build expenses chart    
+        // Establish margins
+
+        var margin = {top: 50, right: 50, bottom: 50, left: 50},
+        width = 300 - margin.left - margin.right,
+        height = 420 - margin.top - margin.bottom;
+        
+        expData = [0, 0, 0, 0];
+        
+        // Set basic chart area
+        var expChart = d3.select(".expChart")
+                            .attr("width", width + margin.left + margin.right)
+                            .attr("height", height + margin.top + margin.bottom)
+                          .append("g")
+                            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Set data range
+        var y = ResetScale("Y", expData);
+        var x = ResetScale("X", expData);
+        
+        // Bind data to containers for bar images
+        var expBar = expChart.selectAll("g")
+                .data(expData)
+            .enter().append("g")
+                .attr("transform", function(d, i) { return "translate(" + ( i * (width/4) ) + ",0)"; });
+
+        // Add bar to container
+        expBar.append("rect")
+            .attr("class", function(d, i) { var barClass = "vertBar bar" + String(i); return barClass; })
+            .attr("y", y)
+            .attr("width", (width/4) - 1)
+            .attr("height", function(d) { return height - y(d); });
+
+        // Add text to bar
+        expBar.append("text")
+            .attr("class", "vertText")
+            .attr("x",  (width/4) - 10)
+            .attr("y", function(d) {return y(d) + 3;})
+            .attr("dy", ".75em")
+            .attr("dx", ".5em")
+            .text(function(d) { return d; });
+
+        // Add axes
+            // Set ticks
+        tickValues = ["Gas", "Car", "Food", "Other"]
+            
+            // Set ordinal scale for ticks
+        textX = d3.scale.ordinal()
+                    .domain(tickValues)
+                    .range([0, 50, 100, 150]);
+        
+            // Build x axis
+        var xAxis = d3.svg.axis()
+                        .scale(textX)
+                        .tickValues("")
+                        .orient("bottom");
+        
+            // Add axis to chart area
+        expChart.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(25," + height + ")")
+            .call(xAxis);
+     
+            // Build y axis
+        var yAxis = d3.svg.axis()
+                        .scale(y)
+                        .orient("right")
+
+            // Add axis to chart area
+        expChart.append("g")
             .attr("class", "y axis")
             .attr("transform", "translate(" + width + ",0)")
             .call(yAxis);
@@ -229,6 +304,57 @@
             d3.select(".incLine").transition()
                 .attr("x1", x)
                 .attr("x2", x);
+
+
+        // Manipulate vertical bars and text
+            // Bind new data to vertical bars and reset text labels
+            d3.selectAll(".vertBar")
+                .data(data);
+            d3.selectAll(".vertText")
+                .data(data)
+                .text(function(d) { return "$"+d; });
+
+            // Begin transitions
+                // Transition vertical bars
+            d3.selectAll(".vertBar").transition()
+                .attr("y", function(d) { return y(d);})
+                .attr("height", function(d) { return height - y(d);});
+            
+                // Transition location of labels on vert vars
+            d3.selectAll(".vertText").transition()
+                .attr("y", function(d) { return y(d) + 3; });
+            
+                // Set x axis labels
+            tickValues = ["Gas", "Cars", "Food", "Other"]
+    
+            textX = d3.scale.ordinal()
+                        .domain(tickValues)
+                        .range([0, 50, 100, 150]);
+
+            var xAxis = d3.svg.axis()
+                            .scale(textX)
+                            .ticks(4)
+                            .tickValues(tickValues)
+                            .orient("bottom");
+            
+            d3.select(".x").transition()
+                .call(xAxis);
+
+                // Set y axis range and labels
+            yAxisScale = d3.scale.linear()
+                        .domain([0, d3.max(expenses)/totalExpense])
+                        .range([height, 0]);
+
+                // Build new y axis
+            var yAxis = d3.svg.axis()
+                    .scale(yAxisScale)
+                    .orient("right")
+                    .tickFormat(formatPercent);
+                
+                // Transition to new y axis
+            d3.selectAll(".y").transition()
+                .call(yAxis);
+
 
 
         // Manipulate vertical bars and text
