@@ -105,14 +105,14 @@
 
         // Add bar to container
         incBar.append("rect")
-            .attr("class", function(d, i) { var barClass = "vertBar bar" + String(i); return barClass; })
+            .attr("class", function(d, i) { var barClass = "incBar bar" + String(i); return barClass; })
             .attr("y", y)
             .attr("width", (width/4) - 1)
             .attr("height", function(d) { return height - y(d); });
 
         // Add text to bar
         incBar.append("text")
-            .attr("class", "vertText")
+            .attr("class", "incText")
             .attr("x",  (width/4) - 10)
             .attr("y", function(d) {return y(d) + 3;})
             .attr("dy", ".75em")
@@ -179,14 +179,14 @@
 
         // Add bar to container
         expBar.append("rect")
-            .attr("class", function(d, i) { var barClass = "vertBar bar" + String(i); return barClass; })
+            .attr("class", function(d, i) { var barClass = "expBar bar" + String(i); return barClass; })
             .attr("y", y)
             .attr("width", (width/4) - 1)
             .attr("height", function(d) { return height - y(d); });
 
         // Add text to bar
         expBar.append("text")
-            .attr("class", "vertText")
+            .attr("class", "expText")
             .attr("x",  (width/4) - 10)
             .attr("y", function(d) {return y(d) + 3;})
             .attr("dy", ".75em")
@@ -225,6 +225,11 @@
             .attr("transform", "translate(" + width + ",0)")
             .call(yAxis);
         
+
+    //---------------------------------------------------------------------------------------------------------------------------------------------\\
+    //---------------------------------------------------------------------------------------------------------------------------------------------\\
+    //---------------------------------------------------------------------------------------------------------------------------------------------\\
+
 
     function BuildSVG(expenses, income) {
         // Primary function responsible for manipulating SVG elements
@@ -306,22 +311,22 @@
                 .attr("x2", x);
 
 
-        // Manipulate vertical bars and text
+        // Manipulate income bars and text
             // Bind new data to vertical bars and reset text labels
-            d3.selectAll(".vertBar")
+            d3.selectAll(".incBar")
                 .data(data);
-            d3.selectAll(".vertText")
+            d3.selectAll(".incText")
                 .data(data)
                 .text(function(d) { return "$"+d; });
 
             // Begin transitions
                 // Transition vertical bars
-            d3.selectAll(".vertBar").transition()
+            d3.selectAll(".incBar").transition()
                 .attr("y", function(d) { return y(d);})
                 .attr("height", function(d) { return height - y(d);});
             
                 // Transition location of labels on vert vars
-            d3.selectAll(".vertText").transition()
+            d3.selectAll(".incText").transition()
                 .attr("y", function(d) { return y(d) + 3; });
             
                 // Set x axis labels
@@ -357,22 +362,22 @@
 
 
 
-        // Manipulate vertical bars and text
+        // Manipulate expense bars and text
             // Bind new data to vertical bars and reset text labels
-            d3.selectAll(".vertBar")
+            d3.selectAll(".expBar")
                 .data(data);
-            d3.selectAll(".vertText")
+            d3.selectAll(".expText")
                 .data(data)
                 .text(function(d) { return "$"+d; });
 
             // Begin transitions
                 // Transition vertical bars
-            d3.selectAll(".vertBar").transition()
+            d3.selectAll(".expBar").transition()
                 .attr("y", function(d) { return y(d);})
                 .attr("height", function(d) { return height - y(d);});
             
                 // Transition location of labels on vert vars
-            d3.selectAll(".vertText").transition()
+            d3.selectAll(".expText").transition()
                 .attr("y", function(d) { return y(d) + 3; });
             
                 // Set x axis labels
