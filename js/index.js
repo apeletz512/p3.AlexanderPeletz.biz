@@ -6,7 +6,7 @@
 
     $('#calc').attr('disabled', 'disabled');
 
-    $('input').change(function() {
+    $('input').keyup(function() {
         var incomplete = 0;
         var food = $('#food').val();
         if(!($.isNumeric(food))) {
