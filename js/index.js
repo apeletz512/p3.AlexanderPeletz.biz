@@ -1,6 +1,6 @@
     // Perform primary calculations    
     $('#directions').click(function() {
-        window.alert("Enter numerical values into each of the fields in the personal budget calculator, then click the Calculate button. After entering in an initial set of data, tweak the numbers and hit Calculate again. Enjoy the smooth visual transitions. Be careful that your total expenses don't exceed the red 'Total Income' bar  in the 'Total Expenses' chart.");
+        window.alert("Enter numerical values into each of the fields in the personal budget calculator, then click the Calculate button. After entering in an initial set of data, tweak the numbers and hit Calculate again. Enjoy the smooth visual transitions.");
     })
 
 
