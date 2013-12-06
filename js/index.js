@@ -1,4 +1,10 @@
     // Perform primary calculations    
+    $('#directions').click(function() {
+        window.alert("Enter numerical values into each of the fields in the personal budget calculator, then click the Calculate button. After entering in an initial set of data, tweak the numbers and hit Calculate again. Enjoy the smooth visual transitions. Be careful that your total expenses don't exceed the red 'Total Income' bar  in the 'Total Expenses' chart.");
+    })
+
+
+
     $('#calc').click(function() {
         var food = $('#food').val();
         var car = $('#car').val();
@@ -7,12 +13,12 @@
         var wage = $('#wage').val();
         var interest = $('#interest').val();
         var incOther = $('#incOther').val();
+        
         $('.hidden').attr("class", "shown");
 
         income = [Number(wage), Number(interest), Number(incOther)];
         expenses = [Number(food), Number(car), Number(fun), Number(expOther)];
         BuildSVG(expenses, income);
-
     });
 
     $('.class')
@@ -65,7 +71,7 @@
 
     // Build income chart   
         // Establish margins
-        var margin = {top: 50, right: 50, bottom: 50, left: 50},
+        var margin = {top: 50, right: 50, bottom: 20, left: 50},
         width = 330 - margin.left - margin.right,
         height = 420 - margin.top - margin.bottom;
         
@@ -129,7 +135,7 @@
 
     // Build expenses chart    
         // Establish margins
-        var margin = {top: 50, right: 50, bottom: 50, left: 50},
+        var margin = {top: 50, right: 50, bottom: 20, left: 50},
         width = 300 - margin.left - margin.right,
         height = 420 - margin.top - margin.bottom;        
         

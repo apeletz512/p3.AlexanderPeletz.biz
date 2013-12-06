@@ -12,18 +12,25 @@
     <br>
     <div class="row-fluid">
         <div class="span8 offset2">
-            <div class="hidden"><p>Expenses as a percentage of Total Income</p></div>
+            <div class="hidden row-fluid">
+                <div class="span6 offset4">
+                    <h5>Expenses as a percentage of Total Income</h5>
+                </div>
+            </div>
             <svg class="chart"></svg>
+        </div>
+        <div class="span1 offset1">
+            <button id="directions" class="btn btn-primary btn-block" type="button">Instructions</button>
         </div>
     </div>
     <br>
     <div class="row-fluid">
-        <div class="span4">
+        <div class="span3 offset1">
             <svg class="incChart"></svg>
-            <div class="hidden">Individual incomes as a percentage<br> of total incomes</div>
+            <div class="hidden" "row-fluid"><div class="span6 offset3"><h5>Individual incomes as a percentage of total incomes</h5></div></div>
         </div>
         <div class="span4">
-            <form>
+            <form class="mainForm">
                 <legend>Expenses</legend>
                 <div class="row-fluid">
                     <div class="span4">
@@ -92,7 +99,7 @@
         </div>
         <div class="span4">
             <svg class="expChart"></svg>
-            <div class="hidden">Individual expenses as a percentage<br>of total expenditures</div>
+            <div class="hidden" "row-fluid"><div class="span6 offset2"><h5>Individual expenses as a percentage of total expenses</h5></div></div>
         </div>
     </div>
 </div>
