@@ -43,14 +43,6 @@
             .attr("class", function(d, i) { var barClass ="horizBar bar"+String(i); return barClass; })
             .attr("width", x)
             .attr("height", height);
-        
-        // Create text labels
-        bar.append("text")
-            .attr("class", "horizText")
-            .attr("x", function(d) { return x(d) - 3; })
-            .attr("y", height / 2)
-            .attr("dy", ".35em")
-            .text(function(d) { return d; });
 
         xAxis = d3.svg.axis()
                     .scale(x)
@@ -101,15 +93,6 @@
             .attr("width", (width/3) - 1)
             .attr("height", function(d) { return height - y(d); });
 
-        // Add text to bar
-        incBar.append("text")
-            .attr("class", "incText")
-            .attr("x",  (width/3) - 10)
-            .attr("y", function(d) {return y(d) + 3;})
-            .attr("dy", ".75em")
-            .attr("dx", ".5em")
-            .text(function(d) { return d; });
-
         // Add axes
             // Set ticks
         tickValues = ["Wages", "Interest/Dividens", "Other"]
@@ -117,7 +100,7 @@
             // Set ordinal scale for ticks
         textX = d3.scale.ordinal()
                     .domain(tickValues)
-                    .range([0, 66, 133]);
+                    .range([0, 100, 200]);
         
             // Build x axis
         var xAxis = d3.svg.axis()
@@ -134,12 +117,12 @@
             // Build y axis
         var yAxis = d3.svg.axis()
                         .scale(y)
-                        .orient("right")
+                        .orient("left")
 
             // Add axis to chart area
         incChart.append("g")
             .attr("class", "incY axis")
-            .attr("transform", "translate(" + width + ",0)")
+            .attr("transform", "translate(-40,0)")
             .call(yAxis);
 
     // Build expenses chart    
@@ -170,15 +153,6 @@
             .attr("y", y)
             .attr("width", (width/4) - 1)
             .attr("height", function(d) { return height - y(d); });
-
-        // Add text to bar
-        expBar.append("text")
-            .attr("class", "expText")
-            .attr("x",  (width/4) - 10)
-            .attr("y", function(d) {return y(d) + 3;})
-            .attr("dy", ".75em")
-            .attr("dx", ".5em")
-            .text(function(d) { return d; });
 
         // Add axes
             // Set ticks
@@ -239,23 +213,7 @@
                                             return xLoc - x(expenses[i]);
                                             });
 
-                // Place text labels for horizontal chart
-            d3.selectAll(".horizText")
-                .data(expenses)
-                .text(function(d) { if(d > 0) { return "$"+d; }});
-                
-                // Set location of labels
-            d3.selectAll(".horizText")//.transition()
-                    .attr("x", function(d, i) { 
-                                            var xLoc = 0;
-                                            for(var iter = 0; iter <= i; iter++) {
-                                                    xLoc = xLoc + x(expenses[iter]);
-                                                }
-                                            return xLoc - 3;
-                                            });
-
-                // Reset axis
-            
+            // Reset axes
                 // Set x axis range and labels
             var formatPercent = d3.format(".0%");
 
@@ -298,8 +256,7 @@
                 .attr("x2", x);
 
 
-        // Manipulate income bars and text
-                        
+        // Manipulate income bars and text                    
                 // Set x axis range and labels
             var totalIncome = 0;
             for (var i = income.length - 1; i >= 0; i--) {
@@ -321,16 +278,12 @@
                 .attr("y", function(d) { return y(d);})
                 .attr("height", function(d) { return height - y(d);});
             
-                // Transition location of labels on vert vars
-            d3.selectAll(".incText").transition()
-                .attr("y", function(d) { return y(d) + 3; });
-            
                 // Set x axis labels
             tickValues = ["Wages", "Interest/Dividends", "Other"]
     
             textX = d3.scale.ordinal()
                         .domain(tickValues)
-                        .range([0, 66, 133]);
+                        .range([11, 91, 167]);
 
             var xAxis = d3.svg.axis()
                             .scale(textX)
@@ -373,10 +326,6 @@
             d3.selectAll(".expBar").transition()
                 .attr("y", function(d) { return y(d);})
                 .attr("height", function(d) { return height - y(d);});
-            
-                // Transition location of labels on vert vars
-            d3.selectAll(".expText").transition()
-                .attr("y", function(d) { return y(d) + 3; });
             
                 // Set x axis labels
             tickValues = ["Gas", "Cars", "Food", "Other"]
