@@ -14,22 +14,34 @@
   padding: 10px;
 }
 
-
-.bar0 {
-  fill: red;
+.expBar0 {
+  fill: #333333;
 }
 
-.bar1 {
-  fill: green;
+.expBar1 {
+  fill: #4C4C4C;
 }
 
-.bar2 {
-  fill: blue;
+.expBar2 {
+  fill: #666666;
 }
 
-.bar3 {
-  fill: gray;
+.expBar3 {
+  fill: #808080;
 }
+
+.incBar0 {
+  fill: #00FF00;
+}
+
+.incBar1 {
+  fill: #00CC00;
+}
+
+.incBar2 {
+  fill: #006600;
+}
+
 .expChart  text {
   fill: white;
   font: 10px sans-serif;

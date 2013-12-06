@@ -96,7 +96,7 @@
         
         // Build bars for chart and establish classes
         bar.append("rect")
-            .attr("class", function(d, i) { var barClass ="horizBar bar"+String(i); return barClass; })
+            .attr("class", function(d, i) { var barClass ="horizBar expBar"+String(i); return barClass; })
             .attr("width", x)
             .attr("height", height);
 
@@ -145,7 +145,7 @@
 
         // Add bar to container
         incBar.append("rect")
-            .attr("class", function(d, i) { var barClass = "incBar bar" + String(i); return barClass; })
+            .attr("class", function(d, i) { var barClass = "incBar incBar" + String(i); return barClass; })
             .attr("y", y)
             .attr("width", (width/3) - 1)
             .attr("height", function(d) { return height - y(d); });
@@ -206,7 +206,7 @@
 
         // Add bar to container
         expBar.append("rect")
-            .attr("class", function(d, i) { var barClass = "expBar bar" + String(i); return barClass; })
+            .attr("class", function(d, i) { var barClass = "expBar expBar" + String(i); return barClass; })
             .attr("y", y)
             .attr("width", (width/4) - 1)
             .attr("height", function(d) { return height - y(d); });
@@ -308,7 +308,7 @@
 
             d3.select(".incLine")
                 .data([totalIncome])
-                .style("stroke", "red");
+                .style("stroke", "#33CC33");
 
             d3.select(".incLine").transition()
                 .attr("x1", x)
