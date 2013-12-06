@@ -1,23 +1,69 @@
     // Perform primary calculations    
     $('#directions').click(function() {
         window.alert("Enter numerical values into each of the fields in the personal budget calculator, then click the Calculate button. After entering in an initial set of data, tweak the numbers and hit Calculate again. Enjoy the smooth visual transitions.");
-    })
+
+    });
+
+    $('#calc').attr('disabled', 'disabled');
+
+    $('input').change(function() {
+        var incomplete = 0;
+        var food = $('#food').val();
+        if(!($.isNumeric(food))) {
+            incomplete = 1;
+        }
+        console.log("Food: "+String(incomplete));
+        var car = $('#car').val();
+        if(!$.isNumeric(car)) {
+            incomplete = 1;
+        }
+        console.log("Car: "+String(incomplete));
+        var rent = $('#rent').val();
+        if(!$.isNumeric(rent)) {
+            incomplete = 1;
+        }
+        console.log("Rent: "+String(incomplete));
+        var expOther = $('#other').val();
+        if(!$.isNumeric(expOther)) {
+            incomplete = 1;
+        }
+        console.log("expOther: "+String(incomplete));
+        var wage = $('#wage').val();
+        if(!$.isNumeric(wage)) {
+            incomplete = 1;
+        }
+        console.log("Wage: "+String(incomplete));
+        var investments = $('#investments').val();
+        if(!$.isNumeric(investments)) {
+            incomplete = 1;
+        }
+        console.log("Investments: "+String(incomplete));
+        var incOther = $('#incOther').val();
+        if(!$.isNumeric(incOther)) {
+            incomplete = 1;
+        }
+        console.log("incOther: "+String(incomplete));
+        console.log(incomplete);
+        if(incomplete == 0) {
+            $('#calc').removeAttr('disabled');
+        } 
+    });
 
 
 
     $('#calc').click(function() {
         var food = $('#food').val();
         var car = $('#car').val();
-        var fun = $('#fun').val();
+        var rent = $('#rent').val();
         var expOther = $('#other').val();
         var wage = $('#wage').val();
-        var interest = $('#interest').val();
+        var investments = $('#investments').val();
         var incOther = $('#incOther').val();
         
         $('.hidden').attr("class", "shown");
 
-        income = [Number(wage), Number(interest), Number(incOther)];
-        expenses = [Number(food), Number(car), Number(fun), Number(expOther)];
+        income = [Number(wage), Number(investments), Number(incOther)];
+        expenses = [Number(food), Number(car), Number(rent), Number(expOther)];
         BuildSVG(expenses, income);
     });
 
@@ -103,7 +149,7 @@
 
         // Add axes
             // Set ticks
-        tickValues = ["Wages", "Interest/Dividens", "Other"]
+        tickValues = ["Wages", "Investments", "Other"]
             
             // Set ordinal scale for ticks
         textX = d3.scale.ordinal()
@@ -164,7 +210,7 @@
 
         // Add axes
             // Set ticks
-        tickValues = ["Gas", "Car", "Food", "Other"]
+        tickValues = ["Food", "Car", "Rent", "Other"]
             
             // Set ordinal scale for ticks
         textX = d3.scale.ordinal()
@@ -175,6 +221,7 @@
         var xAxis = d3.svg.axis()
                         .scale(textX)
                         .tickValues("")
+                        
                         .orient("bottom");
         
             // Add axis to chart area
@@ -288,7 +335,7 @@
                 .attr("height", function(d) { return height - y(d);});
             
                 // Set x axis labels
-            tickValues = ["Wages", "Interest/Dividends", "Other"]
+            tickValues = ["Wages", "Investments", "Other"]
     
             textX = d3.scale.ordinal()
                         .domain(tickValues)
@@ -337,7 +384,7 @@
                 .attr("height", function(d) { return height - y(d);});
             
                 // Set x axis labels
-            tickValues = ["Gas", "Cars", "Food", "Other"]
+            tickValues = ["Food", "Car", "Rent", "Other"]
     
             textX = d3.scale.ordinal()
                         .domain(tickValues)
