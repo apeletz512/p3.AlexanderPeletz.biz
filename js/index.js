@@ -47,6 +47,9 @@
         if(incomplete == 0) {
             $('#calc').removeAttr('disabled');
         } 
+        else {
+            $('#calc').attr('disabled', 'disabled');
+        }
     });
 
 
