@@ -7,6 +7,7 @@
         var wage = $('#wage').val();
         var interest = $('#interest').val();
         var incOther = $('#incOther').val();
+        $('.hidden').attr("class", "shown");
 
         income = [Number(wage), Number(interest), Number(incOther)];
         expenses = [Number(food), Number(car), Number(fun), Number(expOther)];
@@ -14,7 +15,7 @@
 
     });
 
-
+    $('.class')
     // Initialize basic variables
     var income = [0, 0, 0],
         expenses = [0, 0, 0, 0],
@@ -56,10 +57,11 @@
         // Create floating income bar
         chart.append("line")
             .attr("class", "incLine")
-            .attr("x1", "200")
+            .attr("x1", "0")
             .attr("y1", "0")
-            .attr("x2", "200")
-            .attr("y2", "75");
+            .attr("x2", "0")
+            .attr("y2", "75")
+            .style("stroke", "white");
 
     // Build income chart   
         // Establish margins
@@ -249,7 +251,8 @@
                 .call(xAxis);
 
             d3.select(".incLine")
-                .data([totalIncome]);
+                .data([totalIncome])
+                .style("stroke", "red");
 
             d3.select(".incLine").transition()
                 .attr("x1", x)

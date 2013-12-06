@@ -1,6 +1,12 @@
         
-.incLine {
-    stroke: red;
+
+.hidden {
+    display: none;
+}
+
+.shown {
+   display: inherit;
+   text-align: center;
 }
 
 .bar0 {
