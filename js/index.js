@@ -1,49 +1,49 @@
-    // Perform primary calculations    
+//------------------------------------------------------------------------
+//  This javacript file contains references to the D3.js library, which
+//  uses apis to manipulate scalable vector graphics dynamically based on
+//  data supplied to the APIs. The majority of the APIs are easier to 
+//  implement using global variables hence a large chunk of the code 
+//  executed on load is not wrapped in a function. Forgive the lack of 
+//  modularity.
+//------------------------------------------------------------------------
+    
+    // Instructions  
     $('#directions').click(function() {
         window.alert("Enter numerical values into each of the fields in the personal budget calculator, then click the Calculate button. After entering in an initial set of data, tweak the numbers and hit Calculate again. Enjoy the smooth visual transitions.");
-
     });
 
-    $('#calc').attr('disabled', 'disabled');
-
+    // Form validation
+        //Make sure each field has a valid value before enabling calculate function
     $('input').keyup(function() {
         var incomplete = 0;
         var food = $('#food').val();
         if(!($.isNumeric(food))) {
             incomplete = 1;
         }
-        console.log("Food: "+String(incomplete));
         var car = $('#car').val();
         if(!$.isNumeric(car)) {
             incomplete = 1;
         }
-        console.log("Car: "+String(incomplete));
         var rent = $('#rent').val();
         if(!$.isNumeric(rent)) {
             incomplete = 1;
         }
-        console.log("Rent: "+String(incomplete));
         var expOther = $('#other').val();
         if(!$.isNumeric(expOther)) {
             incomplete = 1;
         }
-        console.log("expOther: "+String(incomplete));
         var wage = $('#wage').val();
         if(!$.isNumeric(wage)) {
             incomplete = 1;
         }
-        console.log("Wage: "+String(incomplete));
         var investments = $('#investments').val();
         if(!$.isNumeric(investments)) {
             incomplete = 1;
         }
-        console.log("Investments: "+String(incomplete));
         var incOther = $('#incOther').val();
         if(!$.isNumeric(incOther)) {
             incomplete = 1;
         }
-        console.log("incOther: "+String(incomplete));
-        console.log(incomplete);
         if(incomplete == 0) {
             $('#calc').removeAttr('disabled');
         } 
@@ -53,7 +53,8 @@
     });
 
 
-
+    // Primary site function
+        // Get all form values, build two arrays, then pass the arrays to the TransitionSVG function, and show our titles
     $('#calc').click(function() {
         var food = $('#food').val();
         var car = $('#car').val();
@@ -62,15 +63,20 @@
         var wage = $('#wage').val();
         var investments = $('#investments').val();
         var incOther = $('#incOther').val();
-        
-        $('.hidden').attr("class", "shown");
-
         income = [Number(wage), Number(investments), Number(incOther)];
         expenses = [Number(food), Number(car), Number(rent), Number(expOther)];
-        BuildSVG(expenses, income);
+        
+        TransitionSVG(expenses, income);
+        
+        $('.hidden').attr("class", "shown");
     });
 
-    $('.class')
+    
+
+// ----------------------------------------------------------------------------------------------------------
+//  Commence initialization code. The following chunk of code sets the stage by using an empty data set to
+//  building all of the SVG elements we'll be playing around with as data in the calculator changes
+// ----------------------------------------------------------------------------------------------------------
     // Initialize basic variables
     var income = [0, 0, 0],
         expenses = [0, 0, 0, 0],
@@ -79,8 +85,10 @@
         height =  125 - margin.top - margin.bottom;
 
     var x = ResetScale("X", expenses, income);
-        
+    
+    // -----------------------------------------------------    
     // Build stacked bar chart
+    // -----------------------------------------------------    
         // Set chart area
         var chart = d3.select(".chart")
                         .attr("width", width + margin.left + margin.right)
@@ -118,7 +126,9 @@
             .attr("y2", "75")
             .style("stroke", "white");
 
+    // -----------------------------------------------------
     // Build income chart   
+    // -----------------------------------------------------
         // Establish margins
         var margin = {top: 50, right: 50, bottom: 20, left: 50},
         width = 330 - margin.left - margin.right,
@@ -182,7 +192,9 @@
             .attr("transform", "translate(-40,0)")
             .call(yAxis);
 
+    // -----------------------------------------------------
     // Build expenses chart    
+    // -----------------------------------------------------
         // Establish margins
         var margin = {top: 50, right: 50, bottom: 20, left: 50},
         width = 300 - margin.left - margin.right,
@@ -246,15 +258,19 @@
         
 
     //---------------------------------------------------------------------------------------------------------------------------------------------\\
-    //---------------------------------------------------------------------------------------------------------------------------------------------\\
+    //  On-load code section complete. Two core functions follow.
     //---------------------------------------------------------------------------------------------------------------------------------------------\\
 
-
-    function BuildSVG(expenses, income) {
-        // Primary function responsible for manipulating SVG elements
+    function TransitionSVG(expenses, income) {
+        // ---------------------------------------------------------------------------------------------------------- 
+        //  Primary function responsible for manipulating SVG elements. Accepts two arrays of data, binds that data to 
+        //  various SVG elements, then relocates and resizes SVG elements based on the bound data.
+        // ----------------------------------------------------------------------------------------------------------  
 
         var x = ResetScale("X", expenses, income);
-        // Manipulate horizontal bars and text
+        // -----------------------------------------------------
+        // Manipulate horizontal bars and axes
+        // ----------------------------------------------------- 
             // Bind new data set to horizontal bars
             d3.selectAll(".horizBar")
                 .data(expenses);
@@ -275,6 +291,7 @@
                 // Set x axis range and labels
             var formatPercent = d3.format(".0%");
 
+            // Get some global variables to use in our scales
             var totalExpense = 0;
             for (var i = expenses.length - 1; i >= 0; i--) {
                 totalExpense = totalExpense + Number(expenses[i]);
@@ -283,8 +300,6 @@
             for (var i = income.length - 1; i >=0; i--) {
                 totalIncome = totalIncome + Number(income[i]);
             }
-
-
             if (totalExpense > totalIncome) {
                 maxValue = totalExpense
             }
@@ -292,30 +307,35 @@
                 maxValue = totalIncome
             }
 
+            // Reset scale for x axis.
             xAxisScale = d3.scale.linear()
                         .domain([0, maxValue/totalIncome])
                         .range([0, 800]);
 
-            var formatPercent = d3.format(".0%");
-
+            // Build new x axis
             xAxis = d3.svg.axis()
                     .scale(xAxisScale)
                     .orient("bottom")
                     .tickFormat(formatPercent)
 
+            // Transition to new x axis
             d3.select(".stackedX").transition()
                 .call(xAxis);
 
+            // Reset income slider
             d3.select(".incLine")
                 .data([totalIncome])
                 .style("stroke", "#33CC33");
 
+            // Transition income slider to new location
             d3.select(".incLine").transition()
                 .attr("x1", x)
                 .attr("x2", x);
 
 
+        // ----------------------------------------------------- 
         // Manipulate income bars and text                    
+        // ----------------------------------------------------- 
                 // Set x axis range and labels
             var totalIncome = 0;
             for (var i = income.length - 1; i >= 0; i--) {
@@ -340,16 +360,19 @@
                 // Set x axis labels
             tickValues = ["Wages", "Investments", "Other"]
     
+                // Set x label locations
             textX = d3.scale.ordinal()
                         .domain(tickValues)
                         .range([11, 91, 167]);
 
+                // Build new x axis
             var xAxis = d3.svg.axis()
                             .scale(textX)
                             .ticks(4)
                             .tickValues(tickValues)
                             .orient("bottom");
-            
+                
+                // Transition to new x axis
             d3.select(".incX").transition()
                 .call(xAxis);
 
@@ -369,14 +392,12 @@
                 .call(yAxis);
 
 
-
+        // -----------------------------------------------------  
         // Manipulate expense bars and text
-            // Bind new data to vertical bars and reset text labels
+        // ----------------------------------------------------- 
+            // Bind new data to vertical bars and reset scale
             d3.selectAll(".expBar")
                 .data(expenses);
-            d3.selectAll(".expText")
-                .data(expenses)
-                .text(function(d) { return "$"+d; });
 
             var y = ResetScale("expY", expenses, income);
 
@@ -389,16 +410,19 @@
                 // Set x axis labels
             tickValues = ["Food", "Car", "Rent", "Other"]
     
+                // Set label locations
             textX = d3.scale.ordinal()
                         .domain(tickValues)
                         .range([0, 50, 100, 150]);
 
+                // Build new x axis
             var xAxis = d3.svg.axis()
                             .scale(textX)
                             .ticks(4)
                             .tickValues(tickValues)
                             .orient("bottom");
             
+                // Transition to new x axis
             d3.select(".expX").transition()
                 .call(xAxis);
 
@@ -418,8 +442,9 @@
                 .call(yAxis);
     }
 
+    
     function ResetScale(string, expenses, income) {
-        // This scaling function determines input and output ranges which are commonly reset when new data is supplied to the site
+        // This scaling function determines the appropriate visual scaling function, which is reset when new data is supplied to the site
         var scale = "";
         switch (string) {                
                 case "X":
@@ -431,8 +456,6 @@
                     for (var i = income.length - 1; i >=0; i--) {
                         totalIncome = totalIncome + Number(income[i]);
                     }
-                    console.log(totalIncome);
-                    console.log(totalExpense);
 
                     if (totalExpense > totalIncome) {
                         maxValue = totalExpense
@@ -440,7 +463,6 @@
                     else {
                         maxValue = totalIncome
                     }
-                    console.log(maxValue);
                     scale = d3.scale.linear()
                         .domain([0, maxValue])
                         .range([0, 800]);
@@ -470,17 +492,3 @@
         return scale;
     }
 
-
-        //$('#lucy').css('border','3px solid red');
-        //$('.ricardo').css('background-color','yellow');
-        //$('body').css('background-color','yellow');
-        //$('div').css("background-color",'green');
-        //$('div').remove();
-
-
-    $('#lucy').click(function() {   
-        var color = $('input').val();
-        $(this).css("background-color",color)});
-    
-    $('#ricky').click(function() {
-        $('.ricardo').remove(); });
