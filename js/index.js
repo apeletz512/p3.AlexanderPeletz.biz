@@ -1,11 +1,13 @@
-//------------------------------------------------------------------------
-//  This javacript file contains references to the D3.js library, which
-//  uses apis to manipulate scalable vector graphics dynamically based on
-//  data supplied to the APIs. The majority of the APIs are easier to 
-//  implement using global variables hence a large chunk of the code 
-//  executed on load is not wrapped in a function. Forgive the lack of 
-//  modularity.
-//------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
+//  Title: Personal Finance Visualizer
+//  Author: Alexander S. Peletz, December 2013
+//  Notes:  This javacript file contains references to the D3.js library, which
+//          uses apis to manipulate scalable vector graphics dynamically based on
+//          data supplied to the APIs. The majority of the APIs are easier to 
+//          implement using global variables hence a large chunk of the code 
+//          executed on load is not wrapped in a function. Forgive the lack of 
+//          modularity.
+//---------------------------------------------------------------------------------
     
     // Instructions  
     $('#directions').click(function() {
